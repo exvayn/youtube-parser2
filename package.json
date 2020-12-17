@@ -1,0 +1,33 @@
+{
+  "name": "youtube-parser2",
+  "version": "1.0.0",
+  "description": "A util to extract raw video-URLs and format information from a YouTube-video page.",
+  "main": "lib/youtube-parser.js",
+  "scripts": {
+    "build": "babel src --presets @babel/preset-env --out-dir lib",
+    "prepublish": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/exvayn/youtube-parser2.git"
+  },
+  "keywords": [
+    "backend",
+    "youtube",
+    "parse"
+  ],
+  "author": "Bair Bolsoboev <bairbol@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/exvayn/youtube-parser2/issues"
+  },
+  "homepage": "https://github.com/exvayn/youtube-parser2#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.12.10",
+    "@babel/core": "^7.12.10",
+    "@babel/preset-env": "^7.12.10"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.1"
+  }
+}
