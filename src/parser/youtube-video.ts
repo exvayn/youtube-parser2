@@ -1,19 +1,18 @@
 export class YoutubeVideo {
-  // VARIABLES:
-  //   url;
-  //   quality;
-  //   isAudioOnly;
-  //   isVideoOnly;
-  //   qualityLabel;
-  //   audioQuality;
-  //   rawData;
+  rawData: any;
+  url: string;
+  quality: string;
+  isAudioOnly: boolean;
+  isVideoOnly: boolean;
+  qualityLabel: any;
+  audioQuality: any;
 
   constructor(rawData) {
     this.rawData = rawData;
     this.url = rawData.url;
     this.quality = rawData.quality;
-    this.isAudioOnly = this._isStreamAudioOnly();
-    this.isVideoOnly = this._isStreamVideoOnly();
+    this.isAudioOnly = this.isStreamAudioOnly();
+    this.isVideoOnly = this.isStreamVideoOnly();
 
     if (!this.isAudioOnly) {
       this.qualityLabel = rawData.qualityLabel;
@@ -26,18 +25,20 @@ export class YoutubeVideo {
     return this;
   }
 
-  _isStreamAudioOnly() {
+  private isStreamAudioOnly() {
     return this.rawData.mimeType.includes("audio");
   };
 
-  _isStreamVideoOnly() {
+  private isStreamVideoOnly() {
     return !(undefined !== this.rawData.audioQuality);
   };
 }
 
 export class YoutubeVideoData {
-  // VARIABLES:
-  //   videos;
+  metadata: any;
+  isPlayable: boolean;
+  playabilityStatus: boolean;
+  videos: Array<YoutubeVideo>;
 
   constructor(playerResponse, videos) {
     this.metadata = playerResponse.videoDetails;
@@ -46,28 +47,28 @@ export class YoutubeVideoData {
     this.videos = this.sortedList(videos);
   }
 
-  getAudioOnlyList() {
+  getAudioOnlyList(): Array<YoutubeVideo> {
     const ytList = this.videos.filter((video)=> {
       return video.isAudioOnly;
     })
     return this.sortedList(ytList);
   }
 
-  getVideoWithAudioList() {
+  getVideoWithAudioList(): Array<YoutubeVideo> {
     const ytList = this.videos.filter((video)=> {
       return !video.isAudioOnly && !video.isVideoOnly;
     })
     return this.sortedList(ytList);
   }
 
-  getVideoOnlyList() {
+  getVideoOnlyList(): Array<YoutubeVideo> {
     const ytList = this.videos.filter((video)=> {
       return video.isVideoOnly;
     })
     return this.sortedList(ytList);
   }
 
-  sortedList(list) {
+  private sortedList(list: Array<YoutubeVideo>): Array<YoutubeVideo> {
     return list.sort((audio1, audio2)=>{
       return audio1.rawData.contentLength - audio2.rawData.contentLength;
     });

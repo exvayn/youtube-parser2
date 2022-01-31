@@ -36,8 +36,6 @@ return value - A promise object to resolve with `YoutubeVideoData` object.
 * metadata - youtube video information
 * isPlayable - is video availeable to play
 * playabilityStatus - video playability status
-* isPlayable - is video availeable to play
-* playabilityStatus - video playability status
 * videos - list of all `YoutubeVideo` objects. Sorted by `rawData.contentLength` field in ascending order.
 
 `YoutubeVideoData` example:

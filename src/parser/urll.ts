@@ -1,4 +1,4 @@
-function parseQuery(url) {
+function parseQuery(url): any {
   var parts, subpart, name, value, index,
     obj = {};
 

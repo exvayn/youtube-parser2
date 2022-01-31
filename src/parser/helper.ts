@@ -1,4 +1,4 @@
-export function getJsonFromUrl(url) {
+export function getJsonFromUrl(url): any {
   var question = url.indexOf("?");
   var hash = url.indexOf("#");
   if (hash == -1 && question == -1) return {};
@@ -7,7 +7,7 @@ export function getJsonFromUrl(url) {
   return getJsonFromQuery(query);
 }
 
-export function getJsonFromQuery(url) {
+export function getJsonFromQuery(url): any {
   var query = url;
   var result = {} ;
   query.split("&").forEach(function (part) {

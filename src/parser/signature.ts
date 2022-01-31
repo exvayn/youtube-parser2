@@ -1,35 +1,29 @@
 import fetch  from "node-fetch";
 
 export class YoutubeSignatureParser {
-  // VARIABLES:
-  //   videoId;
-  //   _decriptAlgorithm;
-  //   _loader;
+  videoId: string;
+  private loader: Promise<unknown>;
+  private decriptAlgorithm: any;
 
-  constructor(videoId) {
-    if (videoId) {
-      this.videoId = videoId;
-    } else {
-      this.videoId = "pPw_izFr5PA" // any video - GOOBA
-    }
-    this._loader = this._loadDecriptionAlgorithm();
+  constructor(videoId = "pPw_izFr5PA") {
+    this.videoId = videoId;
+    this.loader = this.loadDecriptionAlgorithm();
   }
 
   onLoad(callback) {
-    var self = this;
-    this._loader.then(() => {
+    this.loader.then(() => {
       callback();
     });
   }
 
   onError(callback) {
-    this._loader.catch((e) => {
+    this.loader.catch((e) => {
       callback(e);
     });;
   }
 
   getSignature(sig) {
-    if (this._decriptAlgorithm === undefined) return;
+    if (this.decriptAlgorithm === undefined) return;
 
     var reverse = (a) => {
       return a.reverse();
@@ -56,25 +50,24 @@ export class YoutubeSignatureParser {
     var a = sig.split("");
 
     // manipulations with "a"
-    eval(this._decriptAlgorithm);
+    eval(this.decriptAlgorithm);
 
     return a.join("");
   };
 
-  _loadDecriptionAlgorithm() {
-    return this._getSignatureDecriptAlgorithm().then((decriptAlgorithm) => {
-      this._decriptAlgorithm = decriptAlgorithm;
-      return decriptAlgorithm;
-    })
+  private async loadDecriptionAlgorithm() {
+    const decriptAlgorithm = await this.getSignatureDecriptAlgorithm();
+    this.decriptAlgorithm = decriptAlgorithm;
+    return decriptAlgorithm;
   }
 
-  _getSignatureDecriptAlgorithm() {
+  private getSignatureDecriptAlgorithm() {
     return new Promise((fulfill, reject) => {
-      this._getPlayerIasPath().then((playerIasPath) => {
+      this.getPlayerIasPath().then((playerIasPath) => {
         return fetch('https://www.youtube.com' + playerIasPath, { headers: { "User-Agent": "Mozilla/5.0" } })
           .then((response) => response.text())
           .then((response) => {
-            const decriptAlgorithm = this._getChiper(response);
+            const decriptAlgorithm = this.getChiper(response);
             fulfill(decriptAlgorithm);
           }).catch((e) => {
             reject(e);
@@ -83,21 +76,19 @@ export class YoutubeSignatureParser {
     });
   };
 
-  _getPlayerIasPath() {
+  private getPlayerIasPath() {
     return fetch('https://www.youtube.com/embed/' + this.videoId, { headers: { "User-Agent": "Mozilla/5.0" } })
       .then((response) => response.text())
       .then((response) => {
-        var subStringWithPath = response.split("name=\"player_ias/base\"")[0];
-        var startPath = subStringWithPath.lastIndexOf("src=\"") + 5;
-        var endPath = subStringWithPath.lastIndexOf("\"");
-        var playerIasPath = subStringWithPath.substr(startPath, endPath - startPath);
+        var subStringWithPath = response.match(/src=\"([^ ]*)\/base.js\"/)[1];
+        var playerIasPath = subStringWithPath + "/base.js";
         return playerIasPath;
       });
   };
 
-  _getChiper(decipherScript) {
+  private getChiper(decipherScript) {
     var decriptAlgorithm = "";
-    var decipherPatterns = decipherScript.split(".split(\"\")");
+    var decipherPatterns: any = decipherScript.split(".split(\"\")");
     decipherPatterns.splice(0, 1);
 
     for (var key of Object.keys(decipherPatterns)) {
